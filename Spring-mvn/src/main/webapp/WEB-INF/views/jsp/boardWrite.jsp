@@ -14,19 +14,12 @@
 	</style>
 </head>
 <body>
-	<c:choose>
-		<c:when test="${ board == null }">
-			<form action="/board/writeproc.wwz" method="post" name="boardwrite">
-		</c:when>
-		<c:otherwise>
-			<form action="/board/modify.wwz" method="post" name="boardwrite">
-				<input type="hidden" name="id" value="${ board.id }"/>		
-		</c:otherwise>
-	</c:choose>
-	<input type="hidden" name="grp" value="${ grp }"/>
-	<input type="hidden" name="order" value="${ order }"/>
-	<input type="hidden" name="lvl" value="${ lvl }"/>
-	<input type="hidden" name="parentId" value="${ parentId }"/>
+	<form action="${ actionUrl }" method="post" name="boardwrite">
+		<input type="hidden" name="id" value="${ board.id }"/>	
+		<input type="hidden" name="grp" value="${ grp }"/>
+		<input type="hidden" name="order" value="${ order }"/>
+		<input type="hidden" name="lvl" value="${ lvl }"/>
+		<input type="hidden" name="parentId" value="${ parentId }"/>
 	
 	<table>
 		<tr>

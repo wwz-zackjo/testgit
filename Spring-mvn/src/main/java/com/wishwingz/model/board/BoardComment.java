@@ -3,6 +3,8 @@
  */
 package com.wishwingz.model.board;
 
+import java.util.Date;
+
 import org.joda.time.DateTime;
 
 /**
@@ -14,8 +16,8 @@ public class BoardComment {
 	private String contentId;
 	private String content;
 	private String regName;
-	private DateTime regDttm;
-	private DateTime updDttm;
+	private Date regDttm;
+	private Date updDttm;
 	private int order;
 	private int grp;
 	private int lvl;
@@ -46,16 +48,16 @@ public class BoardComment {
 	public void setRegName(String regName) {
 		this.regName = regName;
 	}
-	public DateTime getRegDttm() {
+	public Date getRegDttm() {
 		return regDttm;
 	}
-	public void setRegDttm(DateTime regDttm) {
+	public void setRegDttm(Date regDttm) {
 		this.regDttm = regDttm;
 	}
-	public DateTime getUpdDttm() {
+	public Date getUpdDttm() {
 		return updDttm;
 	}
-	public void setUpdDttm(DateTime updDttm) {
+	public void setUpdDttm(Date updDttm) {
 		this.updDttm = updDttm;
 	}
 	public int getOrder() {

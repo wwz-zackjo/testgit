@@ -19,7 +19,7 @@ import com.wishwingz.repository.BoardRepository;
 @Service
 public class BoardServiceImple implements BoardService {
 	@Autowired
-	BoardRepository boardRepository;
+	private BoardRepository boardRepository;
 	
 	public List<Board> find(int pageNum, int pageAmount) {
 		
@@ -32,6 +32,11 @@ public class BoardServiceImple implements BoardService {
 	public Board findContent(int idx) {
 		
 		return boardRepository.findContent(idx);
+	}
+	
+	public Board findContentWithComment(int idx) {
+		
+		return boardRepository.findContentWithComment(idx);
 	}
 
 	public void modifyContentHit(int contentId) {
@@ -50,6 +55,12 @@ public class BoardServiceImple implements BoardService {
 	public void modifyBoardContent(Board board) {
 		
 		boardRepository.modifyBoardContent(board);
+		
+	}
+
+	public void modifyBoardContentComment(BoardComment boardComment) {
+		
+		boardRepository.modifyBoardContentComment(boardComment);
 		
 	}
 }

@@ -2,6 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wishwingz.repository.BoardRepository">
+	<resultMap id="boardMap" type="com.wishwingz.model.board.Board">
+		<id property="id" column="id" />
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="hit" column="hit"/>
+		<result property="regName" column="regName"/>
+		<result property="regDttm" column="regDttm"/>
+		<result property="updDttm" column="updDttm"/>
+		<result property="order" column="order"/>
+		<result property="grp" column="grp"/>
+		<result property="lvl" column="lvl"/>
+		<result property="isPrivate" column="isPrivate"/>
+		<result property="parentId" column="parentId"/>
+		<result property="totalCommentCount" column="totalCommentCount"/>
+		<collection property="comments" javaType="java.util.ArrayList" resultMap="commentMap" />
+	</resultMap>
+	<resultMap id="commentMap" type="com.wishwingz.model.board.BoardComment">
+		<id property="id" column="c_id" />
+		<result property="contentId" column="c_contentId"/>
+		<result property="content" column="c_content"/>
+		<result property="regName" column="c_regName"/>
+		<result property="regDttm" column="c_regDttm"/>
+		<result property="updDttm" column="c_updDttm"/>
+		<result property="order" column="c_order"/>
+		<result property="grp" column="c_grp"/>
+		<result property="lvl" column="c_lvl"/>
+		<result property="isPrivate" column="c_isPrivate"/>
+		<result property="parentId" column="c_parentId"/>
+	</resultMap>
 
 	<select id="findAll" parameterType="hashmap" resultType="com.wishwingz.model.board.Board">
 		SELECT
@@ -45,6 +74,76 @@
 			id = #{contentId}
 	</select>
 	
+	<select id="findContentWithComment" resultMap="boardMap">
+		SELECT
+			 a.id
+			,a.title
+			,a.content
+			,a.hit
+			,a.regName
+			,a.regDttm
+			,a.updDttm
+			,a.`order`
+			,a.grp
+			,a.lvl
+			,a.isPrivate
+			,a.parentId
+			,a.totalCommentCount
+			,b.id AS c_id
+			,b.content AS c_content
+			,b.regName AS c_regName
+			,b.regDttm AS c_regDttm
+			,b.updDttm AS c_updDttm
+			,b.`order` AS c_order
+			,b.grp AS c_grp
+			,b.lvl AS c_lvl
+			,b.isPrivate AS c_isPrivate
+			,b.parentId AS c_parentId
+		FROM
+			board a 
+			LEFT OUTER JOIN board_comment b ON a.id = b.contentId
+		WHERE
+			a.id = #{contentId}
+	</select>
+	
+	<select id="findNextSibling" parameterType="hashmap" resultType="com.wishwingz.model.board.Board">
+		SELECT
+			 a.id
+			,a.title
+			,a.content
+			,a.hit
+			,a.regName
+			,a.regDttm
+			,a.updDttm
+			,a.`order`
+			,a.grp
+			,a.lvl
+			,a.isPrivate
+			,a.parentId
+			,a.totalCommentCount	
+		FROM
+			board a
+		WHERE
+			grp = #{grp}
+		AND
+			<![CDATA[
+			`order` > #{order}
+			]]>
+		AND
+			<![CDATA[
+			lvl <= #{lvl}
+			]]>
+	</select>
+	
+	<select id="findMaxOrder" resultType="integer">
+		SELECT
+			IFNULL(MAX(`order`),0)
+		FROM
+			board a
+		WHERE
+			grp = #{grp}
+	</select>
+	
 	<select id="findComments" parameterType="hashmap" resultType="com.wishwingz.model.board.BoardComment">
 		SELECT
 			 a.id
@@ -84,6 +183,15 @@
 			id = #{contentId}
 	</update>
 	
+	<update id="modifyCommentGrp" parameterType="hashmap">
+		UPDATE
+			board_comment
+		SET
+			grp = #{grp}
+		WHERE
+			id = #{id}
+	</update>
+	
 	<update id="modifyBoardContent" parameterType="com.wishwingz.model.board.Board">
 		UPDATE
 			board
@@ -94,6 +202,39 @@
 			,updDttm = #{updDttm}
 		WHERE
 			id = #{id}
+	</update>
+	
+	<update id="modifyBoardContentComment" parameterType="com.wishwingz.model.board.BoardComment">
+		UPDATE
+			board_comment
+		SET
+			content = #{content}
+			,regName = #{regName}
+			,updDttm = #{updDttm}
+		WHERE
+			id = #{id}
+	</update>
+	
+	<update id="modifyContentOrderFrom" parameterType="hashmap">
+		UPDATE
+			board
+		SET
+			`order` = `order` + 1
+		WHERE
+			grp = #{grp}
+		AND
+			<![CDATA[
+			`order` >= #{order}
+			]]>
+	</update>
+	
+	<update id="modifyCommentCount">
+		UPDATE
+			board
+		SET
+			totalCommentCount = totalCommentCount + 1
+		WHERE
+			id=#{contentId}
 	</update>
 	
 	<insert id="saveBoardContent" useGeneratedKeys="true" keyProperty="id" parameterType="com.wishwingz.model.board.Board">
@@ -120,13 +261,43 @@
 		);
 	</insert>
 	
+	<insert id="saveBoardComment" useGeneratedKeys="true" keyProperty="id" parameterType="com.wishwingz.model.board.BoardComment">
+		INSERT INTO board_comment (
+			contentId
+			,content
+			,regName
+			,regDttm
+			,updDttm
+			,`order`
+			,grp
+			,lvl
+			,parentId	
+		) VALUES (
+			#{contentId}
+			,#{content}
+			,#{regName}
+			,#{regDttm}
+			,#{updDttm}
+			,#{order}
+			,#{grp}
+			,#{lvl}
+			,#{parentId}
+		);
+	</insert>
+	
 	<delete id="deleteBoardContent">
 		DELETE FROM board
 		WHERE
 			id=#{contentId}
 	</delete>
 	
-	<delete id="deleteBoardContentComment">
+	<delete id="deleteBoardComment">
+		DELETE FROM board_comment
+		WHERE
+			id=#{id}
+	</delete>
+	
+	<delete id="deleteBoardCommentAll">
 		DELETE FROM board_comment
 		WHERE
 			contentId=#{contentId}

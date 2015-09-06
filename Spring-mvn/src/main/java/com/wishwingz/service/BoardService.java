@@ -23,4 +23,8 @@ public interface BoardService {
 	public void modifyBoardContent(Board board);
 	
 	public List<BoardComment> findComments(int contentId, int pageNum, int pageAmount);
+	
+	public void modifyBoardContentComment(BoardComment boardComment);
+
+	public Board findContentWithComment(int contentId);
 }

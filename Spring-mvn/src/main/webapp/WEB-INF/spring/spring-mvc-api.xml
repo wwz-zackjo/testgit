@@ -28,11 +28,40 @@
 	<!-- View Resolvers -->
 	<!-- ########################################################## -->
 	<!-- 기본적인 view resolver, 컨트롤러에서 지정한 view_name.jsp 로 랜더링한다. -->
-	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-		<property name="prefix" value="/WEB-INF/views/jsp" />
-		<property name="suffix" value=".jsp" />
-		<!-- 리졸버 우선순위 -->
-		<property name="order" value="2" />
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="contentNegotiationManager">
+            <bean class="org.springframework.web.accept.ContentNegotiationManager">
+                <constructor-arg>
+                    <bean class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+                        <constructor-arg>
+                            <map>
+                                <entry key="json" value="application/json"/>
+                                <entry key="xml" value="application/xml"/>
+                            </map>
+                        </constructor-arg>
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </property>
+	
+ 		<property name="defaultViews">
+			<list>
+			  	<!-- JSON View -->
+			  	<bean	class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+	 			<!-- RSS View -->
+			  	<!-- bean class="com.google.rss.RssFeedView" / -->
+	 			<!-- JAXB XML View -->
+			  	<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<constructor-arg>
+						<bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+							<!-- XML 로 마셀링 될 수 있는 객체 등록	-->
+							<property name="packagesToScan" value="com.wishwingz.model" />
+						</bean>
+					</constructor-arg>
+				</bean>
+			</list>
+		</property>
+	  	<property name="ignoreAcceptHeader" value="true" />
+	  	<property name="order" value="1" />
 	</bean>
 </beans>

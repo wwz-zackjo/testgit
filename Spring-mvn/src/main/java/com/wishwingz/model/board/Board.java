@@ -4,6 +4,7 @@
 package com.wishwingz.model.board;
 
 import java.util.Date;
+import java.util.List;
 
 import org.joda.time.DateTime;
 
@@ -27,6 +28,7 @@ public class Board {
 	private boolean isPrivate;
 	private int parentId;
 	private int totalCommentCount;
+	private List<BoardComment> comments;
 	
 	public String getId() {
 		return id;
@@ -121,5 +123,11 @@ public class Board {
 	}
 	public void setTotalCommentCount(int totalCommentCount) {
 		this.totalCommentCount = totalCommentCount;
+	}
+	public List<BoardComment> getComments() {
+		return comments;
+	}
+	public void setComments(List<BoardComment> comments) {
+		this.comments = comments;
 	}
 }

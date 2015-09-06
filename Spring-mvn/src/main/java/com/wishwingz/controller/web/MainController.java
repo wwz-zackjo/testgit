@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wishwingz.controller;
+package com.wishwingz.controller.web;
 
 import java.util.List;
 

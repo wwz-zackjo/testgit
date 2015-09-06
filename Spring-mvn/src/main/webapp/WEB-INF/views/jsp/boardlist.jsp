@@ -27,15 +27,17 @@
 				<c:forEach items="${ boards }" var="board">
 					<tr>
 						<td>${ board.id }</td>
-						<td><a href="/board/detail.wwz?pageNum=${ pageNum }&idx=${ board.id }">${ board.title }</a></td>
+						<td><a href="/board/detail.wwz?pageNum=${ pageNum }&idx=${ board.id }">${ board.title }<span>(${ board.totalCommentCount })</span></a></td>
 						<td>${ board.regName }</td>
 						<td>${ board.hit }</td>
-						<td>${ board.updDttmForView }</td>
+						<td>${ board.updDttm }</td>
 					</tr>
 				</c:forEach>
 			</c:when>
 			<c:otherwise>
-				<tr>등록된 게시물이 없습니다</tr>
+				<tr>
+					<th>등록된 게시물이 없습니다</th>
+				</tr>
 			</c:otherwise>
 		</c:choose>
 	</table>
